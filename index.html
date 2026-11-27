@@ -161,38 +161,79 @@ details.loes summary{font-weight:800;color:var(--green);cursor:pointer;min-heigh
 .teacher summary{font-weight:800;cursor:pointer;min-height:44px;display:flex;align-items:center}
 .teacher li{margin-bottom:6px}
 a{color:var(--green)}
+/* Reiter + Themen */
+.tabs{display:flex;gap:4px;overflow-x:auto;padding:10px 0 0;scrollbar-width:none;margin-bottom:-10px}
+.tabs button{flex:none;border:0;border-radius:14px 14px 0 0;padding:9px 14px 10px;font-weight:800;font-size:15px;background:rgba(255,255,255,.14);color:inherit;min-height:44px}
+.tabs button.on{background:var(--bg);color:var(--ink)}
+.tabs button.locked{opacity:.6}
+.top .steps{margin-top:10px;padding-top:10px;border-top:1px solid rgba(255,255,255,.18)}
+.top .steps[hidden]{display:none}
+.view{display:none}.view.on{display:block;animation:in .35s ease}
+.themen{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin-top:14px}
+.thema{background:var(--card);border:2px solid var(--line);border-radius:22px;overflow:hidden}
+.thema header{background:var(--tc);color:#1D2B27;padding:14px 18px}
+.thema header small{display:block;font-weight:800;font-size:14px}
+.thema header b{font:600 22px/1.15 Fredoka,ui-rounded,sans-serif}
+.thema ul{list-style:none;margin:0;padding:8px}
+.srow{width:100%;display:flex;gap:12px;align-items:center;text-align:left;border:0;background:none;border-radius:14px;padding:10px;min-height:56px}
+.srow:hover{background:var(--soft)}
+.srow .num{flex:none;width:36px;height:36px;border-radius:50%;display:grid;place-items:center;font:700 17px Fredoka,sans-serif;background:var(--tc);color:#1D2B27}
+.srow.locked .num{background:var(--line);color:var(--muted)}
+.srow .st{display:block;font-size:13px;color:var(--muted);font-weight:700}
+.srow b{display:block;line-height:1.25}
+.lockcard{text-align:center;max-width:560px;margin:30px auto}
+.lockcard .big{font-size:64px;line-height:1}
+.inp{font:700 20px Nunito,sans-serif;border:2px solid var(--line);border-radius:14px;padding:10px 14px;min-height:50px;background:var(--card);color:var(--ink);width:min(100%,260px);text-align:center;letter-spacing:.06em}
+.plan{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.plan li{display:flex;gap:12px;align-items:flex-start;background:var(--soft);border-radius:14px;padding:10px 14px}
+.plan .ty{flex:none;font-weight:800;font-size:13px;border-radius:999px;padding:3px 10px;background:var(--card);border:2px solid var(--line);margin-top:2px}
+.codes{border-collapse:collapse;width:100%;margin:8px 0 14px;font-size:15px}
+.codes th,.codes td{border-bottom:1px solid var(--line);padding:6px 8px;text-align:left}
+.codes td:last-child{font-weight:800;letter-spacing:.05em}
+.ready{color:var(--ok);font-weight:800}
 @media (prefers-reduced-motion:reduce){*{animation:none!important}}
 </style>
 </head>
 <body>
 <header class="top">
   <div class="top-row">
-    <div class="brand">Mission Pausenbrot <small>Station 1</small></div>
+    <div class="brand">Mission Pausenbrot <small>Nahrung – Energie für den Körper</small></div>
   </div>
-  <nav class="steps" id="steps" aria-label="Schritte"></nav>
+  <nav class="tabs" id="tabs" aria-label="Stunden"></nav>
+  <nav class="steps" id="steps" aria-label="Schritte dieser Stunde" hidden></nav>
 </header>
 
 <main>
-<!-- 0 START -->
-<section class="step" id="s-start">
+<!-- STARTSEITE -->
+<div class="view" id="v-start">
   <div class="hero">
     <div>
-      <span class="kicker">Biologie 6 · Nahrung – Energie für den Körper</span>
+      <span class="kicker">Biologie · Klasse 6</span>
       <h1>Mission Pausenbrot</h1>
-      <p class="lead">Jeden Tag packst du eine Brotdose. Aber was steckt eigentlich darin – und was macht dein Körper damit? Auf dieser Plattform findest du es Schritt für Schritt heraus.</p>
-      <button class="btn big" data-go="raetsel">Los geht's →</button>
+      <p class="lead">Was steckt in deinem Essen? Was ist gesund? Und was macht dein Körper mit der Nahrung? Jede Stunde öffnet sich hier ein neuer Reiter – mit Versuchen, Aufgaben zum Mitmachen und Lernprodukten.</p>
+      <button class="btn big" id="continue">Weiter →</button>
     </div>
-    <div class="lunch" aria-hidden="true">
-      <div class="lid"></div>
-      <div class="tray"><span class="it">🍞</span><span class="it">🧀</span><span class="it">🍎</span><span class="it">🥒</span><span class="it">🥛</span></div>
-    </div>
+    <div class="lunch" aria-hidden="true"><div class="lid"></div><div class="tray"><span class="it">🍞</span><span class="it">🧀</span><span class="it">🍎</span><span class="it">🥒</span><span class="it">🥛</span></div></div>
   </div>
-  <h2 style="margin-top:34px">Dein Lernpfad</h2>
-  <div class="path" id="path"></div>
+  <h2 style="margin-top:34px">Eure Reihe</h2>
+  <div class="themen" id="themen"></div>
 
-  <details class="card teacher">
-    <summary>Für Lehrkräfte: Ablauf, Hinweise, Quellen</summary>
-    <ol>
+  <details class="card teacher" id="teacher">
+    <summary>Für Lehrkräfte</summary>
+    <div id="t-login">
+      <p>Bitte gib die Lehrkraft-PIN ein.</p>
+      <div class="row"><input id="pin" class="inp" type="password" inputmode="numeric" autocomplete="off" aria-label="Lehrkraft-PIN"><button class="btn" id="pin-go">Öffnen</button></div>
+      <p class="note" id="pin-out"></p>
+    </div>
+    <div id="t-panel" hidden>
+      <h3>So schaltest du eine Stunde frei</h3>
+      <ol><li>Schreib den Code der Stunde an die Tafel.</li><li>Die SuS tippen oben auf den gesperrten Reiter und geben den Code ein. Die Freischaltung bleibt auf ihrem iPad gespeichert.</li></ol>
+      <p>Alternative ohne Code: Im Skript ganz oben <code>OFFEN_BIS</code> hochsetzen (z. B. auf 2) und die Datei neu hochladen. Dann ist alles bis zu dieser Stunde für alle offen.</p>
+      <table class="codes"><thead><tr><th>Stunde</th><th>Titel</th><th>Code</th></tr></thead><tbody id="codes"></tbody></table>
+      <p class="note">Im Lehrkraft-Modus siehst du auf diesem Gerät alle Reiter, auch gesperrte. Vorsicht beim Beamer: Diese Tabelle zeigt die Codes.</p>
+      <button class="btn alt" id="t-off">Lehrkraft-Modus beenden</button>
+      <h3 style="margin-top:22px">Stunde 1: Ablauf</h3>
+      <ol>
       <li><b>Rätsel</b> (ca. 5 Min.): Schätzen, auflösen. Ergebnis: Nahrung und Wasser sind lebenswichtig.</li>
       <li><b>Brotdose packen und durchleuchten</b> (ca. 8 Min.): Die SuS wählen 3–6 Lebensmittel, geben zwei Tipps ab und sehen die Zusammensetzung pro 100 g.</li>
       <li><b>Stundenfrage</b> (ca. 5 Min., Plenum): Beobachtungen und Fragen der SuS sammeln. Gemeinsam die Stundenfrage formulieren, erst dann in der App aufdecken lassen.</li>
@@ -200,11 +241,31 @@ a{color:var(--green)}
       <li><b>Arbeitsauftrag 2</b> (ca. 8 Min.): Die eigene Brotdose auswerten, schriftlich.</li>
       <li><b>Sicherung</b> (ca. 7 Min.): Zurück zur Stundenfrage, Lückentext, Fachbegriffe-Kasten. Die SuS können ihre Antworten kopieren oder einen Screenshot für GoodNotes machen.</li>
     </ol>
-    <p>Gestufte Hilfen und „Schon fertig?“-Aufgaben stehen bei beiden Arbeitsaufträgen. Antworten werden nur im Browser des jeweiligen iPads gespeichert. „Neu starten“ (ganz unten auf dieser Seite) löscht sie.</p>
-    <p><b>Zu den Daten:</b> Die Nährwerte sind gerundete Durchschnittswerte pro 100 g aus gängigen Nährwerttabellen. Einzelne Produkte weichen davon ab, was sich gut mit Verpackungen vergleichen lässt. Die Wasserwerte stimmen mit dem Merkblatt der Schweizerischen Gesellschaft für Ernährung überein (Gurke 96 g, Apfel 85 g, Orangensaft 88 g pro 100 g). Das Rätsel nutzt die bekannte Faustregel: ohne Trinken nur wenige Tage, ohne Essen mehrere Wochen. Fachleute nennen für Flüssigkeit etwa 3 bis 7 Tage, je nach Hitze, Bewegung und Gesundheit.</p>
+      <p>Gestufte Hilfen und „Schon fertig?“-Aufgaben stehen bei beiden Arbeitsaufträgen. Antworten werden nur im Browser des jeweiligen iPads gespeichert.</p>
+      <p><b>Zu den Daten:</b> Die Nährwerte sind gerundete Durchschnittswerte pro 100 g aus gängigen Nährwerttabellen. Einzelne Produkte weichen davon ab, was sich gut mit Verpackungen vergleichen lässt. Die Wasserwerte stimmen mit dem Merkblatt der Schweizerischen Gesellschaft für Ernährung überein (Gurke 96 g, Apfel 85 g, Orangensaft 88 g pro 100 g). Das Rätsel nutzt die bekannte Faustregel: ohne Trinken nur wenige Tage, ohne Essen mehrere Wochen. Fachleute nennen für Flüssigkeit etwa 3 bis 7 Tage, je nach Hitze, Bewegung und Gesundheit.</p>
     <p class="note">Quellen: <a href="https://www.sge-ssn.ch/media/lisdltcp/wasser-2026.pdf">SGE – Merkblatt Wasser (2026)</a> · <a href="https://www.derstandard.at/2000062500604/wie-lange-ein-mensch-ohne-essen-und-trinken-ueberleben-kann">derStandard – Wie lange ein Mensch ohne Essen und Trinken überleben kann</a> · <a href="https://www.ingenieur.de/technik/fachbereiche/medizin/wie-lange-kann-ein-mensch-ohne-essen-ueberleben/">ingenieur.de – Wie lange kann ein Mensch ohne Essen überleben?</a></p>
-    <button class="btn alt" id="reset">Neu starten (alle Antworten auf diesem Gerät löschen)</button>
+    
+      <h3>Zurücksetzen (nur dieses Gerät)</h3>
+      <div class="row"><button class="btn alt" id="reset">Antworten aus Stunde 1 löschen</button><button class="btn alt" id="reset-unlock">Freischaltungen löschen</button></div>
+    </div>
   </details>
+</div>
+
+<!-- ANDERE STUNDEN (gesperrt oder in Vorbereitung) -->
+<div class="view" id="v-other"></div>
+
+<!-- STUNDE 1 -->
+<div class="view" id="v-s1">
+<section class="step" id="s-start">
+  <div class="hero">
+    <div>
+      <span class="kicker">Stunde 1 · Thema A: Nahrung untersuchen</span>
+      <h1>Was steckt in meiner Brotdose?</h1>
+      <p class="lead">Jeden Tag packst du eine Brotdose. Aber was steckt eigentlich darin – und wozu brauchst du es? Heute findest du es Schritt für Schritt heraus.</p>
+      <button class="btn big" data-go="raetsel">Los geht's →</button>
+    </div>
+    <div class="lunch" aria-hidden="true"><div class="lid"></div><div class="tray"><span class="it">🍞</span><span class="it">🧀</span><span class="it">🍎</span><span class="it">🥒</span><span class="it">🥛</span></div></div>
+  </div>
 </section>
 
 <!-- 1 RÄTSEL -->
@@ -346,20 +407,43 @@ a{color:var(--green)}
   </div>
   <div class="card" style="background:var(--soft)">
     <h3>Ausblick</h3>
-    <p>Woher weiß man eigentlich, was in einem Lebensmittel steckt? Nächstes Mal werdet ihr zu Lebensmittel-Detektiven und weist Nährstoffe selbst nach.</p>
+    <p>Woher weiß man eigentlich, was in einem Lebensmittel steckt? In der nächsten Stunde geht ihr ins Lebensmittel-Labor und weist Nährstoffe selbst nach.</p>
   </div>
 </section>
+</div>
 </main>
 
-<div class="nav"><div class="row">
+<div class="nav" id="bottomnav"><div class="row">
   <button class="btn alt" id="prev">← Zurück</button>
   <button class="btn" id="next">Weiter →</button>
 </div></div>
 
 <script>
 {
+/* ===== Einstellungen für die Lehrkraft ===== */
+const OFFEN_BIS=1;            // alle Stunden bis zu dieser Nummer sind für alle offen (ohne Code)
+const LEHRKRAFT_PIN='6202';   // PIN für den Bereich „Für Lehrkräfte“
+/* Themen und Stunden: Titel, Freischalt-Code, geplante Aktivitäten */
+const THEMEN={A:['Thema A','Nahrung untersuchen','#FFD65C'],B:['Thema B','Gesund essen','#F7A98B'],C:['Thema C','Der Weg der Nahrung','#86D3BB'],Z:['Abschluss','Fit für die Klassenarbeit','#C9B8F0']};
+const STUNDEN=[
+ {n:1,th:'A',t:'Was steckt in meiner Brotdose?',code:'',ready:true,plan:[['Interaktiv','Überlebens-Rätsel, Brotdose packen und durchleuchten'],['Interaktiv','Steckbriefe lesen und Nahrungsbestandteile zuordnen'],['Lernprodukt','Merktext und Fachbegriffe-Kasten']]},
+ {n:2,th:'A',t:'Lebensmittel-Labor I: Stärke und Fett',code:'KARTOFFEL',plan:[['Versuch','Stärkenachweis mit Iod-Kaliumiodid-Lösung (Versuch A)'],['Versuch','Fettfleckprobe (Versuch B)'],['Lernprodukt','Versuchsprotokoll'],['Interaktiv','Virtuelles Labor zum Vorbereiten']]},
+ {n:3,th:'A',t:'Lebensmittel-Labor II: Zucker und Eiweiß',code:'HONIG',plan:[['Versuch','Eiweißnachweis mit Teststreifen (Versuch C)'],['Versuch','Zuckernachweis mit Benedict-Reagenz bzw. Fehling-Probe (Versuch D)'],['Lernprodukt','Ergebnistabelle aller Nachweise'],['Interaktiv','Nachweis-Memory']]},
+ {n:4,th:'A',t:'Ein Fall für Lebensmittel-Detektive',code:'LUPE',plan:[['Versuch','Unbekannte Proben untersuchen und die Nachweise selbst planen'],['Lernprodukt','Detektivbericht'],['Interaktiv','Den Fall lösen']]},
+ {n:5,th:'B',t:'Energie für den Tag',code:'FAHRRAD',plan:[['Interaktiv','Grundumsatz und Leistungsumsatz bei verschiedenen Tätigkeiten vergleichen'],['Praktisch','Tätigkeiten ausprobieren: Wann brauchst du mehr Energie?'],['Lernprodukt','Infografik: Wer braucht wie viel Energie?']]},
+ {n:6,th:'B',t:'Das Ernährungsdreieck',code:'DREIECK',plan:[['Praktisch','Lebensmittel ins Ernährungsdreieck legen'],['Interaktiv','Zucker-Detektiv: Wie viel Zucker steckt in Getränken?'],['Lernprodukt','Ein ausgewogener Tagesteller']]},
+ {n:7,th:'B',t:'Lebensmittel im Check',code:'ROGGEN',plan:[['Praktisch','Verpackungen mitbringen und Nährwerttabellen vergleichen'],['Modell','Vom Roggenkorn zum Mehl: Vollkorn oder Weißmehl?'],['Lernprodukt','Lebensmittel-Steckbrief']]},
+ {n:8,th:'B',t:'Ich und mein Körper',code:'SPIEGEL',plan:[['Praktisch','Schönheitsideale in Werbung und Social Media untersuchen'],['Interaktiv','Bilder hinterfragen: Was ist echt?'],['Lernprodukt','Medien-Check und „Wo gibt es Hilfe?“']]},
+ {n:9,th:'B',t:'Unser Pausenfrühstück',code:'KIOSK',plan:[['Lernprodukt','Empfehlung für ein gesundes Pausenfrühstück (begründete Stellungnahme)'],['Praktisch','Brotdose planen und begründen'],['Interaktiv','Galeriegang mit Feedback']]},
+ {n:10,th:'C',t:'Die Reise des Pausenbrots',code:'MAGEN',plan:[['Modell','Verdauungsorgane am Torso-Modell'],['Versuch','Brot lange kauen: Was schmeckst du?'],['Interaktiv','Den Weg der Nahrung verfolgen']]},
+ {n:11,th:'C',t:'Werkzeuge der Verdauung',code:'SPEICHEL',plan:[['Versuch','Stärkeverdauung durch Speichel (Iodprobe)'],['Modell','Werkzeugmodell der Enzyme'],['Lernprodukt','Versuchsprotokoll mit Deutung']]},
+ {n:12,th:'C',t:'Modelle bauen: Der Dünndarm',code:'ZOTTEN',plan:[['Modell','Oberflächenvergrößerung am Würfelmodell'],['Lernprodukt','Eigenes Darmmodell bauen und mit der Wirklichkeit vergleichen'],['Interaktiv','Modell oder Wirklichkeit?']]},
+ {n:13,th:'Z',t:'Fit für die Klassenarbeit',code:'FINALE',plan:[['Interaktiv','Quiz und Fachbegriffe-Check'],['Lernprodukt','Lernplakat oder Concept-Map'],['Praktisch','Wiederholungs-Stationen']]}
+];
+/* ========================================== */
 const KEY='mission-pausenbrot-s1';
-const STEPS=[['start','Start'],['raetsel','Rätsel'],['brotdose','Brotdose'],['scan','Scanner'],['frage','Stundenfrage'],['aa1','Auftrag 1'],['aa2','Auftrag 2'],['sicherung','Sicherung']];
+const APPKEY='mission-pausenbrot-app';
+const STEPS=[['start','Intro'],['raetsel','Rätsel'],['brotdose','Brotdose'],['scan','Scanner'],['frage','Stundenfrage'],['aa1','Auftrag 1'],['aa2','Auftrag 2'],['sicherung','Sicherung']];
 // Werte pro 100 g, gerundete Durchschnittswerte aus Nährwerttabellen
 const FOODS=[
  {id:'vollkorn',e:'🍞',n:'Vollkornbrot',w:43,kh:38.8,f:1.2,ei:6.8,b:8.1},
@@ -381,7 +465,7 @@ const FOODS=[
 const PARTS=[['w','Wasser','--c-w'],['kh','Kohlenhydrate','--c-kh'],['f','Fett','--c-f'],['ei','Eiweiß','--c-ei'],['b','Ballaststoffe','--c-b'],['r','Mineralstoffe & Sonstiges','--c-r']];
 const OPTS=[['h','ein paar Stunden'],['t','ein paar Tage'],['w','ein paar Wochen'],['j','ein paar Jahre']];
 const SB=[
- {id:'kh',n:'Kohlenhydrate',c:'--c-kh',in:'Brot, Nudeln, Kartoffeln, Reis, Obst, Süßigkeiten',a:'Kohlenhydrate sind die wichtigste Energiequelle. Gehirn und Muskeln nutzen sie besonders schnell.',x:'Zu den Kohlenhydraten gehören Zucker (z. B. Traubenzucker) und Stärke.'},
+ {id:'kh',n:'Kohlenhydrate',c:'--c-kh',in:'Brot, Nudeln, Kartoffeln, Reis, Obst, Süßigkeiten',a:'Kohlenhydrate sind die wichtigste Energiequelle. Gehirn und Muskeln nutzen sie besonders schnell.',x:'Zu den Kohlenhydraten gehören Zucker (z. B. Traubenzucker) und Stärke. Weil sie Energie liefern, nennt man sie auch Betriebsstoffe.'},
  {id:'f',n:'Fette',c:'--c-f',in:'Butter, Öl, Käse, Nüsse, Wurst, Schokolade',a:'Fette liefern sehr viel Energie, pro Gramm mehr als doppelt so viel wie Kohlenhydrate. Der Körper speichert sie als Fettpolster. Diese sind ein Energievorrat und schützen vor Kälte.',x:'Manche Fette sieht man nicht, z. B. in Nüssen oder Käse.'},
  {id:'ei',n:'Eiweiße (Proteine)',c:'--c-ei',in:'Milch, Käse, Eier, Fleisch, Fisch, Linsen, Nüsse',a:'Eiweiße sind Baustoffe. Aus ihnen baut der Körper Muskeln, Haut, Haare und Organe auf. Darum sind sie beim Wachsen besonders wichtig.',x:'Eiweiß ist nicht nur das Eiklar im Ei!'},
  {id:'v',n:'Vitamine',c:'--c-v',in:'vor allem Obst und Gemüse, auch Vollkorn und Milch',a:'Vitamine sind Schutz- und Wirkstoffe. Vitamin C hilft z. B. den Abwehrkräften. Der Körper braucht nur sehr kleine Mengen, aber regelmäßig.',x:'Vitamine liefern keine Energie.'},
@@ -411,8 +495,8 @@ const TERMS=[
  ['Vitamine','Schutz- und Wirkstoffe, in kleinen Mengen nötig, liefern keine Energie.'],
  ['Mineralstoffe','Z. B. Calcium für Knochen und Zähne, Eisen für das Blut.'],
  ['Ballaststoffe','Kaum verdaulich, machen lange satt und halten den Darm in Bewegung.'],
- ['Energielieferant','Ein Stoff, aus dem der Körper Energie gewinnt, z. B. Kohlenhydrate und Fette.'],
- ['Baustoff','Ein Stoff, aus dem der Körper sich aufbaut, z. B. Eiweiße.']
+ ['Betriebsstoffe','Nährstoffe, aus denen der Körper Energie für alle Lebensvorgänge gewinnt, vor allem Kohlenhydrate und Fette.'],
+ ['Baustoffe','Stoffe, aus denen der Körper Muskeln, Haut, Haare und Knochen aufbaut, z. B. Eiweiße.']
 ];
 
 const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
@@ -421,6 +505,11 @@ const fresh=()=>({step:0,r:{},rShown:false,box:[],tip:{},scanned:false,qShown:fa
 let S=fresh();
 try{const raw=localStorage.getItem(KEY);if(raw)S=Object.assign(fresh(),JSON.parse(raw))}catch(e){}
 const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+let A={tab:'',unlocked:{},teacher:false};
+try{const raw=localStorage.getItem(APPKEY);if(raw)A=Object.assign(A,JSON.parse(raw))}catch(e){}
+const saveApp=()=>{try{localStorage.setItem(APPKEY,JSON.stringify(A))}catch(e){}};
+const isOpen=n=>n<=OFFEN_BIS||!!A.unlocked[n]||A.teacher;
+const norm=t=>String(t).trim().toUpperCase().replace(/Ä/g,'AE').replace(/Ö/g,'OE').replace(/Ü/g,'UE').replace(/ß/g,'SS').replace(/\s+/g,'');
 const food=id=>FOODS.find(f=>f.id===id);
 const rest=f=>Math.max(0,100-f.w-f.kh-f.f-f.ei-f.b);
 const fmt=v=>v<1&&v>0?'<1':String(Math.round(v)).replace('.',',');
@@ -432,6 +521,7 @@ function renderSteps(){
 }
 function go(i){
   i=Math.max(0,Math.min(i,maxReach()));S.step=i;save();
+  if(A.tab!=='stunde-1'){A.tab='stunde-1';saveApp();show('stunde-1');return}
   $$('.step').forEach(s=>s.classList.remove('on'));$('#s-'+STEPS[i][0]).classList.add('on');
   renderStep();updateNav();
   window.scrollTo({top:0});
@@ -446,7 +536,6 @@ function updateNav(){
 }
 function renderStep(){
   const id=STEPS[S.step][0];
-  if(id==='start')renderPath();
   if(id==='raetsel')renderRaetsel();
   if(id==='brotdose')renderBox();
   if(id==='scan')renderScan();
@@ -456,10 +545,53 @@ function renderStep(){
   if(id==='sicherung')renderSich();
 }
 
-/* Start */
-function renderPath(){
-  const st=[[1,S.qShown?'Woraus besteht unsere Nahrung?':'Was steckt in deiner Brotdose? Die Frage findest du heute selbst.',false],[2,'folgt',true],[3,'folgt',true]];
-  $('#path').innerHTML=st.map(([n,t,l])=>`<div class="stop ${l?'locked':''}"><div class="num">${l?'🔒':n}</div><div><b>Station ${n}</b>${esc(t)}</div></div>`).join('');
+/* Reiter, Startseite, gesperrte Stunden */
+function renderTabs(){
+  $('#tabs').innerHTML=`<button data-tab="start" class="${A.tab==='start'?'on':''}">Start</button>`+STUNDEN.map(x=>{const o=isOpen(x.n);return `<button data-tab="stunde-${x.n}" class="${A.tab==='stunde-'+x.n?'on':''} ${o?'':'locked'}" aria-label="Stunde ${x.n}${o?'':' (gesperrt)'}">${o?'':'🔒 '}Stunde ${x.n}</button>`}).join('');
+  const b=$('#tabs .on');if(b)b.scrollIntoView({inline:'center',block:'nearest'});
+}
+function show(tab){
+  if(!/^(start|stunde-\d+)$/.test(tab))tab='start';
+  const n=tab==='start'?0:+tab.split('-')[1];
+  if(n>STUNDEN.length)tab='start';
+  A.tab=tab;saveApp();
+  if(location.hash!=='#'+tab){try{history.replaceState(null,'','#'+tab)}catch(e){}}
+  $$('.view').forEach(v=>v.classList.remove('on'));
+  const s1=tab==='stunde-1'&&isOpen(1);
+  $('#steps').hidden=!s1;$('#bottomnav').hidden=!s1;
+  if(tab==='start'){$('#v-start').classList.add('on');renderStart()}
+  else if(s1){$('#v-s1').classList.add('on');go(S.step||0)}
+  else{$('#v-other').classList.add('on');renderOther(n)}
+  renderTabs();
+  if(!s1)window.scrollTo({top:0});
+}
+function renderStart(){
+  const last=Math.max(...STUNDEN.filter(x=>isOpen(x.n)).map(x=>x.n));
+  $('#continue').textContent=`Zu Stunde ${last} →`;$('#continue').dataset.tab='stunde-'+last;
+  $('#themen').innerHTML=Object.keys(THEMEN).map(k=>{const [lab,name,col]=THEMEN[k];
+    return `<section class="thema" style="--tc:${col}"><header><small>${lab}</small><b>${name}</b></header><ul>${STUNDEN.filter(x=>x.th===k).map(x=>{const o=isOpen(x.n);
+      const st=!o?'🔒 gesperrt':(x.ready?'offen':(A.teacher?'Vorschau · in Vorbereitung':'in Vorbereitung'));
+      return `<li><button class="srow ${o?'':'locked'}" data-tab="stunde-${x.n}"><span class="num">${x.n}</span><span><b>${esc(x.t)}</b><span class="st">${st}</span></span></button></li>`}).join('')}</ul></section>`}).join('');
+  $('#t-login').hidden=A.teacher;$('#t-panel').hidden=!A.teacher;
+  if(A.teacher)$('#codes').innerHTML=STUNDEN.map(x=>`<tr><td>${x.n}</td><td>${esc(x.t)}</td><td>${x.n<=OFFEN_BIS?'offen':esc(x.code)}</td></tr>`).join('');
+}
+function renderOther(n){
+  const x=STUNDEN[n-1],th=THEMEN[x.th];
+  if(!isOpen(n)){
+    $('#v-other').innerHTML=`<div class="card lockcard"><div class="big">🔒</div><span class="kicker">Stunde ${n} · ${th[0]}: ${th[1]}</span><h2>${esc(x.t)}</h2>
+    <p>Diese Stunde ist noch gesperrt. Gib den Code ein, den deine Lehrerin an die Tafel schreibt.</p>
+    <div class="row" style="justify-content:center"><input id="code" class="inp" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Code für Stunde ${n}"><button class="btn" id="unlock" data-n="${n}">Freischalten</button></div>
+    <p id="code-out" style="font-weight:800;min-height:1.5em"></p></div>`;
+    return;
+  }
+  $('#v-other').innerHTML=`<span class="kicker">Stunde ${n} · ${th[0]}: ${th[1]}</span><h1>${esc(x.t)}</h1>
+  <div class="card"><h3>Das erwartet dich</h3><ul class="plan">${x.plan.map(([ty,tx])=>`<li><span class="ty">${ty}</span><span>${esc(tx)}</span></li>`).join('')}</ul></div>
+  <div class="card" style="background:var(--soft)"><h3>Diese Stunde wird gerade vorbereitet</h3><p>Hier entstehen bald die Versuche und Aufgaben. Schau in der nächsten Stunde wieder vorbei!</p></div>`;
+}
+function tryUnlock(n){
+  const x=STUNDEN[n-1],v=norm($('#code').value);
+  if(v&&v===norm(x.code)){A.unlocked[n]=1;saveApp();show('stunde-'+n)}
+  else{$('#code-out').textContent='Das ist leider nicht der richtige Code. Schau noch einmal an die Tafel.';$('#code').select()}
 }
 
 /* Rätsel */
@@ -564,6 +696,11 @@ function initHelp(){
 /* Ereignisse */
 document.addEventListener('click',e=>{
   const t=e.target.closest('button');if(!t)return;
+  if(t.dataset.tab){show(t.dataset.tab);return}
+  if(t.id==='unlock'){tryUnlock(+t.dataset.n);return}
+  if(t.id==='pin-go'){if($('#pin').value.trim()===LEHRKRAFT_PIN){A.teacher=true;saveApp();$('#pin').value='';show('start');$('#teacher').open=true}else{$('#pin-out').textContent='Falsche PIN.'}return}
+  if(t.id==='t-off'){A.teacher=false;saveApp();show('start');return}
+  if(t.id==='reset-unlock'){A.unlocked={};saveApp();show('start');$('#teacher').open=true;return}
   if(t.dataset.go){go(STEPS.findIndex(s=>s[0]===t.dataset.go));return}
   if(t.parentElement&&t.parentElement.id==='steps'){go(+t.dataset.i);return}
   if(t.id==='prev'){go(S.step-1);return}
@@ -582,13 +719,18 @@ document.addEventListener('click',e=>{
   if(t.dataset.term!==undefined){S.flip[t.dataset.term]=!S.flip[t.dataset.term];save();t.classList.toggle('flip');return}
   if(t.id==='copy'){const txt=summaryText();const ok=()=>{$('#copy-out').textContent='✓ Kopiert! In GoodNotes einfügen.'};
     try{navigator.clipboard.writeText(txt).then(ok,()=>{$('#copy-out').textContent='Kopieren nicht möglich – bitte Screenshot machen.'})}catch(err){$('#copy-out').textContent='Kopieren nicht möglich – bitte Screenshot machen.'}return}
-  if(t.id==='reset'){S=fresh();save();$$('textarea[data-key]').forEach(x=>x.value='');$$('details.hilfe').forEach(d=>{d.open=false;if(d.dataset.lvl!=='1')d.classList.add('locked')});go(0);return}
+  if(t.id==='reset'){S=fresh();save();$$('textarea[data-key]').forEach(x=>x.value='');$$('details.hilfe').forEach(d=>{d.open=false;if(d.dataset.lvl!=='1')d.classList.add('locked')});show('stunde-1');return}
 });
 document.addEventListener('change',e=>{const s=e.target.closest('select[data-g]');if(!s)return;S.gaps[s.dataset.g]=s.value;S.gChecked=false;save();s.className=''; $('#g-out').textContent=''});
-document.addEventListener('keydown',e=>{if(e.target.matches('textarea,select'))return;if(e.key==='ArrowRight')go(S.step+1);if(e.key==='ArrowLeft')go(S.step-1)});
+document.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&e.target.id==='code'){tryUnlock(+$('#unlock').dataset.n);return}
+  if(e.key==='Enter'&&e.target.id==='pin'){$('#pin-go').click();return}
+  if(e.target.matches('textarea,select,input')||A.tab!=='stunde-1')return;
+  if(e.key==='ArrowRight')go(S.step+1);if(e.key==='ArrowLeft')go(S.step-1)});
+addEventListener('hashchange',()=>{const h=location.hash.slice(1);if(h&&h!==A.tab)show(h)});
 
 initHelp();
-go(S.step||0);
+show(location.hash.slice(1)||A.tab||(S.step>0?'stunde-1':'start'));
 }
 </script>
 </body>
